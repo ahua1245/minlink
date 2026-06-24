@@ -1,25 +1,13 @@
-version: '3.8'
-
 services:
   minlink:
-    # 使用环境变量指定镜像名和版本号
-    image: ${DOCKER_REGISTRY:-}minlink:${APP_VERSION:-latest}
+    image: minlink:latest
     container_name: minlink
-    build:
-      context: .
-      dockerfile: Dockerfile
     environment:
-      - APP_ENV=${APP_ENV:-production}
+      - APP_ENV=production
       - DB_PATH=/app/data/minlink.db
-      - PORT=${PORT:-8080}
+      - PORT=8080
     volumes:
       - ./data:/app/data
     ports:
-      - "${PORT:-8080}:${PORT:-8080}"
-    networks:
-      - minlink-network
+      - "8080:8080"
     restart: unless-stopped
-
-networks:
-  minlink-network:
-    driver: bridge

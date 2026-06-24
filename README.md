@@ -60,8 +60,14 @@ go run ./cmd/main.go
 ### Docker 部署
 
 ```bash
-# 构建并启动（使用默认版本号）
-docker-compose up -d --build
+# 构建镜像（默认版本 1.0.0）
+./build.sh
+
+# 或指定版本号
+./build.sh 1.0.1
+
+# 启动服务
+docker-compose up -d
 
 # 查看日志
 docker-compose logs -f
@@ -69,31 +75,6 @@ docker-compose logs -f
 # 停止服务
 docker-compose down
 ```
-
-### Docker 镜像版本管理
-
-```bash
-# 构建指定版本的镜像
-APP_VERSION=1.0.0 docker-compose build
-
-# 使用指定版本启动
-APP_VERSION=1.0.0 docker-compose up -d
-
-# 推送镜像到私有仓库（需要配置 DOCKER_REGISTRY）
-DOCKER_REGISTRY=registry.example.com/ APP_VERSION=1.0.0 docker-compose push
-
-# 只使用已构建的镜像（不重新构建）
-docker-compose up -d --no-build
-```
-
-**环境变量配置（.env）：**
-
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| APP_VERSION | 镜像版本号 | 1.0.0 |
-| DOCKER_REGISTRY | 镜像仓库地址（可选） | 空 |
-| APP_ENV | 运行环境 | production |
-| PORT | 服务端口 | 8080 |
 
 ## 核心功能
 
