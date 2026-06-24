@@ -2,12 +2,13 @@ services:
   minlink:
     image: minlink:latest
     container_name: minlink
+    env_file:
+      - .env
     environment:
       - APP_ENV=production
       - DB_PATH=/app/data/minlink.db
-      - PORT=8080
     volumes:
       - ./data:/app/data
     ports:
-      - "8080:8080"
+      - "8082:8080"
     restart: unless-stopped
