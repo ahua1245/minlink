@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o minlink ./cmd/main.go
+RUN apk --no-cache add gcc musl-dev && CGO_ENABLED=1 GOOS=linux go build -o minlink ./cmd/main.go
 
 FROM alpine:latest
 
@@ -18,7 +18,7 @@ COPY --from=builder /app/static ./static
 
 RUN mkdir -p /app/data
 
-RUN apk --no-cache add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN apk --no-cache add tzdata musl && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 EXPOSE 8080
 
