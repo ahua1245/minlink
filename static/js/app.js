@@ -5,6 +5,20 @@ const API_BASE_URL = '/api/v1';
 let currentUser = null;
 let authToken = localStorage.getItem('token');
 
+// 清空表单
+function clearForm() {
+    document.getElementById('long-url-input').value = '';
+    document.getElementById('link-name').value = '';
+    document.getElementById('link-remark').value = '';
+    document.getElementById('expire-days').value = '7';
+    
+    // 隐藏结果区域
+    const resultDiv = document.getElementById('result');
+    if (resultDiv) {
+        resultDiv.classList.add('hidden');
+    }
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     updateStatsCards();
@@ -819,6 +833,8 @@ function truncateText(text, maxLength) {
     if (!text) return '-';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
+
+
 
 // ==================== 事件监听 ====================
 

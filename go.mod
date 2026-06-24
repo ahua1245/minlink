@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.16
-	golang.org/x/crypto v0.53.0
+	golang.org/x/crypto v0.51.0
 )
 
 require (
