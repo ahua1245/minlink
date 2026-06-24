@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN apk --no-cache add gcc musl-dev sqlite-dev libc6-compat zlib-dev && CGO_ENABLED=1 GOOS=linux go build -o minlink ./cmd/main.go
+RUN apk --no-cache add gcc musl-dev sqlite-dev libc6-compat zlib-dev && CGO_ENABLED=1 GOOS=linux CGO_CFLAGS="-D_FILE_OFFSET_BITS=64" go build -o minlink ./cmd/main.go
 
 FROM alpine:latest
 
