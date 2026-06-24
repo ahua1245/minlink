@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MinLink - 短链接服务</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">MinLink</div>
+            <div class="nav-links">
+                <a href="javascript:void(0)" class="nav-link active" onclick="showPage('home')">首页</a>
+                <a href="javascript:void(0)" class="nav-link" onclick="showPage('login')" id="nav-login">登录</a>
+                <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('profile')" id="nav-profile">用户中心</a>
+                <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('admin')" id="nav-admin">管理后台</a>
+                <button class="logout-btn hidden" id="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <header class="header">
+                <h1>MinLink</h1>
+                <p>快速生成、分享和追踪您的链接</p>
+            </header>
+
+            <main class="main-content">
+                <form id="shorten-form" class="shorten-form">
+                    <div class="input-group">
+                        <input 
+                            type="url" 
+                            id="long-url-input" 
+                            placeholder="输入需要缩短的链接..." 
+                            required
+                            class="url-input"
+                        >
+                    </div>
+                    <div class="input-row">
+                        <input 
+                            type="text" 
+                            id="link-name" 
+                            placeholder="短链名称（可选）" 
+                            maxlength="100"
+                            class="name-input"
+                        >
+                        <input 
+                            type="text" 
+                            id="link-remark" 
+                            placeholder="备注（可选）" 
+                            maxlength="500"
+                            class="remark-input"
+                        >
+                        <select id="expire-days" class="expire-select">
+                            <option value="1">1天</option>
+                            <option value="3">3天</option>
+                            <option value="7" selected>1周</option>
+                            <option value="30">1个月</option>
+                            <option value="365">1年</option>
+                            <option value="0">长期（不过期）</option>
+                        </select>
+                        <button type="submit" class="submit-btn">生成短链</button>
+                    </div>
+                </form>
+
+                <div id="result" class="result hidden">
+                    <div class="result-header">
+                        <span class="result-title">生成成功！</span>
+                        <button id="copy-btn" class="copy-btn">复制</button>
+                    </div>
+                    <input type="text" id="short-url-result" readonly class="result-url">
+                    <div class="result-stats" id="result-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-visits">0</span>
+                            <span class="stat-label">总访问</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="today-visits">0</span>
+                            <span class="stat-label">今日访问</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-cards">
+                    <div class="card">
+                        <span class="card-value" id="stats-total-count">0</span>
+                        <span class="card-label">短链生成</span>
+                    </div>
+                    <div class="card">
+                        <span class="card-value" id="stats-total-visits">0</span>
+                        <span class="card-label">总访问次数</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="page-login" class="page hidden">
+            <div class="login-container">
+                <h2>用户登录</h2>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="login-username">用户名</label>
+                        <input type="text" id="login-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="submit-btn">登录</button>
+                </form>
+                <p class="login-tip">默认管理员账号：admin / admin123</p>
+            </div>
+        </div>
+
+        <!-- 用户中心 -->
+        <div id="page-profile" class="page hidden">
+            <div class="profile-container">
+                <h2>用户中心</h2>
+                
+                <!-- 用户信息 -->
+                <div class="profile-section">
+                    <h3>个人信息</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">用户名</span>
+                            <span class="info-value" id="profile-username">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">邮箱</span>
+                            <span class="info-value" id="profile-email">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">角色</span>
+                            <span class="info-value" id="profile-role">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 修改密码 -->
+                <div class="profile-section">
+                    <h3>修改密码</h3>
+                    <form id="change-password-form" class="change-password-form">
+                        <div class="form-group">
+                            <label for="old-password">旧密码</label>
+                            <input type="password" id="old-password" placeholder="请输入旧密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">新密码</label>
+                            <input type="password" id="new-password" placeholder="请输入新密码" required>
+                        </div>
+                        <button type="submit" class="submit-btn">修改密码</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 管理后台 -->
+        <div id="page-admin" class="page hidden">
+            <div class="admin-container">
+                <h2>管理后台</h2>
+                
+                <!-- 标签页 -->
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="showAdminTab('shorturls')">短链管理</button>
+                    <button class="tab-btn" onclick="showAdminTab('users')">用户管理</button>
+                </div>
+
+                <!-- 短链管理 -->
+                <div id="tab-shorturls" class="admin-tab active">
+                    <div class="admin-actions">
+                        <input type="text" id="search-shortcode" placeholder="搜索短码..." onkeyup="searchShortURLs()">
+                        <button class="action-btn" onclick="loadShortURLs()">刷新列表</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>短码</th>
+                                <th>名称</th>
+                                <th>备注</th>
+                                <th>长链接</th>
+                                <th>访问量</th>
+                                <th>剩余天数</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shorturls-table-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 用户管理 -->
+                <div id="tab-users" class="admin-tab hidden">
+                    <div class="admin-actions">
+                        <input type="text" id="search-username" placeholder="搜索用户名..." onkeyup="searchUsers()">
+                        <button class="action-btn" onclick="loadUsers()">刷新列表</button>
+                        <button class="action-btn" onclick="showCreateUserModal()">新建用户</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>邮箱</th>
+                                <th>角色</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新建用户模态框 -->
+        <div id="create-user-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeCreateUserModal()">&times;</span>
+                <h3>新建用户</h3>
+                <form id="create-user-form">
+                    <div class="form-group">
+                        <label for="new-username">用户名 *</label>
+                        <input type="text" id="new-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-password">密码 *</label>
+                        <input type="password" id="create-password" placeholder="请输入密码" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-email">邮箱</label>
+                        <input type="email" id="new-email" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-role">角色</label>
+                        <select id="new-role">
+                            <option value="0">普通用户</option>
+                            <option value="1">管理员</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-status">状态</label>
+                        <select id="new-status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">创建用户</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 编辑用户模态框 -->
+        <div id="edit-user-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeEditUserModal()">&times;</span>
+                <h3>编辑用户</h3>
+                <form id="edit-user-form">
+                    <input type="hidden" id="edit-user-id">
+                    <div class="form-group">
+                        <label for="edit-username">用户名 *</label>
+                        <input type="text" id="edit-username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-password">新密码（留空则不修改）</label>
+                        <input type="password" id="edit-password" placeholder="请输入新密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">邮箱</label>
+                        <input type="email" id="edit-email" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-role">角色</label>
+                        <select id="edit-role">
+                            <option value="0">普通用户</option>
+                            <option value="1">管理员</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-status">状态</label>
+                        <select id="edit-status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">保存修改</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
