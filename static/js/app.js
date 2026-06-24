@@ -12,6 +12,11 @@ function clearForm() {
     document.getElementById('link-remark').value = '';
     document.getElementById('expire-days').value = '7';
     
+    // 隐藏清除图标
+    updateClearIcon('long-url-input');
+    updateClearIcon('link-name');
+    updateClearIcon('link-remark');
+    
     // 隐藏结果区域
     const resultDiv = document.getElementById('result');
     if (resultDiv) {
@@ -19,10 +24,39 @@ function clearForm() {
     }
 }
 
+// 清空单个输入框
+function clearInput(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.value = '';
+        updateClearIcon(inputId);
+        input.focus();
+    }
+}
+
+// 更新清除图标显示状态
+function updateClearIcon(inputId) {
+    const input = document.getElementById(inputId);
+    const clearBtn = document.getElementById('clear-' + inputId);
+    if (input && clearBtn) {
+        clearBtn.style.display = input.value.trim() ? 'flex' : 'none';
+    }
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     updateStatsCards();
     checkLoginStatus();
+    
+    // 为输入框添加事件监听
+    const inputs = ['long-url-input', 'link-name', 'link-remark'];
+    inputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', () => updateClearIcon(id));
+            input.addEventListener('keyup', () => updateClearIcon(id));
+        }
+    });
 });
 
 // ==================== 基础 API ====================

@@ -33,29 +33,53 @@
             <main class="main-content">
                 <form id="shorten-form" class="shorten-form">
                     <div class="input-group">
-                        <input 
-                            type="url" 
-                            id="long-url-input" 
-                            placeholder="输入需要缩短的链接..." 
-                            required
-                            class="url-input"
-                        >
+                        <div class="input-wrapper">
+                            <input 
+                                type="url" 
+                                id="long-url-input" 
+                                placeholder="输入需要缩短的链接..." 
+                                required
+                                class="url-input"
+                            >
+                            <button type="button" class="clear-icon-btn" id="clear-long-url-input" onclick="clearInput('long-url-input')" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="input-row">
-                        <input 
-                            type="text" 
-                            id="link-name" 
-                            placeholder="短链名称（可选）" 
-                            maxlength="100"
-                            class="name-input"
-                        >
-                        <input 
-                            type="text" 
-                            id="link-remark" 
-                            placeholder="备注（可选）" 
-                            maxlength="500"
-                            class="remark-input"
-                        >
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="link-name" 
+                                placeholder="短链名称（可选）" 
+                                maxlength="100"
+                                class="name-input"
+                            >
+                            <button type="button" class="clear-icon-btn" id="clear-link-name" onclick="clearInput('link-name')" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="link-remark" 
+                                placeholder="备注（可选）" 
+                                maxlength="500"
+                                class="remark-input"
+                            >
+                            <button type="button" class="clear-icon-btn" id="clear-link-remark" onclick="clearInput('link-remark')" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
                         <select id="expire-days" class="expire-select">
                             <option value="1">1天</option>
                             <option value="3">3天</option>

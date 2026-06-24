@@ -132,21 +132,36 @@ body {
 
 .input-group {
     width: 100%;
+    position: relative;
 }
 
 .url-input {
     width: 100%;
     padding: 15px 20px;
+    padding-right: 45px;
     font-size: 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
 }
 
 .url-input:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+}
+
+.input-group .input-wrapper {
+    width: 100%;
 }
 
 .input-row {
@@ -157,14 +172,16 @@ body {
 
 .name-input,
 .remark-input {
-    flex: 1;
+    width: 100%;
     min-width: 140px;
     padding: 15px 20px;
+    padding-right: 45px;
     font-size: 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     outline: none;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
 .expire-select {
@@ -220,6 +237,36 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     transform: translateY(-2px);
     box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.clear-icon-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s;
+    padding: 0;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.clear-icon-btn:hover {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.url-input {
+    padding-right: 40px;
 }
 
 .result {
