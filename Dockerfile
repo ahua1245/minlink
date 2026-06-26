@@ -1,4 +1,4 @@
-FROM golang:1.25 AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
@@ -7,9 +7,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=1 GOOS=linux go build -o minlink ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o minlink ./cmd/main.go
 
-FROM debian:bookworm-slim
+FROM alpine:latest
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY --from=builder /app/static ./static
 
 RUN mkdir -p /app/data
 
-RUN apt-get update && apt-get install -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/* && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN apk --no-cache add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 EXPOSE 8080
 
