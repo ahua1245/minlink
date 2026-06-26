@@ -26,7 +26,7 @@ func main() {
 
 	cfg := config.LoadConfig()
 
-	db, err := gorm.Open("sqlite3", cfg.DBPath)
+	db, err := gorm.Open("sqlite", cfg.DBPath)
 	if err != nil {
 		log.Fatalf("Failed to connect database: %v", err)
 	}
