@@ -32,7 +32,11 @@ func main() {
 	}
 	defer db.Close()
 
+	// 禁用 GORM 日志（抑制 AutoMigrate 的警告信息）
+	db.LogMode(false)
+
 	// 自动迁移所有模型
+	// glebarez/sqlite 在表已存在时可能报告警告，这是正常情况
 	db.AutoMigrate(&model.ShortURL{}, &model.VisitLog{}, &model.User{})
 
 	shortURLService := service.NewShortURLService(db)
@@ -49,6 +53,10 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	// 设置信任的代理（安全配置）
+	// 如果不需要代理功能，设置为 nil；如果需要，请指定具体的代理 IP
+	r.SetTrustedProxies(nil)
 
 	// 配置 CORS
 	r.Use(cors.New(cors.Config{
