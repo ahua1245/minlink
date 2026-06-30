@@ -43,6 +43,42 @@ function updateClearIcon(inputId) {
     }
 }
 
+// 更新有效期选项（根据登录状态）
+function updateExpireOptions() {
+    const select = document.getElementById('expire-days');
+    const isLoggedIn = currentUser !== null;
+    
+    // 清空现有选项
+    select.innerHTML = '';
+    
+    // 游客：只显示一周内选项
+    // 登录用户/管理员：显示全部选项（含永久）
+    const options = isLoggedIn 
+        ? [
+            { value: 1, text: '1天' },
+            { value: 3, text: '3天' },
+            { value: 7, text: '1周', selected: true },
+            { value: 30, text: '1个月' },
+            { value: 365, text: '1年' },
+            { value: 0, text: '永久（不过期）' }
+          ]
+        : [
+            { value: 1, text: '1天' },
+            { value: 3, text: '3天' },
+            { value: 7, text: '1周', selected: true }
+          ];
+    
+    options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        if (opt.selected) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     updateStatsCards();
@@ -350,11 +386,15 @@ async function checkLoginStatus() {
             if (result.code === 0) {
                 currentUser = result.data;
                 updateNavbar();
+                updateExpireOptions();
             }
         } catch (error) {
             console.error('检查登录状态失败:', error);
             logout();
         }
+    } else {
+        // 游客状态也要渲染有效期选项
+        updateExpireOptions();
     }
 }
 
