@@ -19,7 +19,7 @@ var (
 )
 
 type ShortURLService interface {
-	CreateShortURL(longURL string, expireDays int, userID uint, name, remark string) (*model.ShortURL, error)
+	CreateShortURL(longURL string, expireDays int, userID uint, username string, name, remark string) (*model.ShortURL, error)
 	GetLongURL(shortCode string) (string, error)
 	RecordVisit(shortCode, ip, userAgent, referer string) error
 	GetStats(shortCode string) (map[string]interface{}, error)
@@ -95,7 +95,7 @@ func NewShortURLService(db *gorm.DB) ShortURLService {
 	return service
 }
 
-func (s *shortURLService) CreateShortURL(longURL string, expireDays int, userID uint, name, remark string) (*model.ShortURL, error) {
+func (s *shortURLService) CreateShortURL(longURL string, expireDays int, userID uint, username string, name, remark string) (*model.ShortURL, error) {
 	if !util.IsValidURL(longURL) {
 		return nil, ErrInvalidURL
 	}
@@ -115,12 +115,19 @@ func (s *shortURLService) CreateShortURL(longURL string, expireDays int, userID 
 		expireAt = &expire
 	}
 
+	// 创建人用户名：登录用户用 username，游客用 "guest"
+	createdBy := username
+	if createdBy == "" {
+		createdBy = "guest"
+	}
+
 	shortURL := &model.ShortURL{
 		ShortCode: shortCode,
 		Name:      name,
 		Remark:    remark,
 		LongURL:   longURL,
 		UserID:    userID,
+		CreatedBy: createdBy,
 		ExpireAt:  expireAt,
 		Status:    model.StatusActive,
 	}
