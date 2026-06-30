@@ -569,7 +569,7 @@ function renderMyShortURLTable(items) {
     tbody.innerHTML = '';
     
     if (!items || items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">暂无数据</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">暂无数据</td></tr>';
         return;
     }
     
@@ -584,6 +584,10 @@ function renderMyShortURLTable(items) {
             <td>${item.total_visits || 0}</td>
             <td>${remainingDays}</td>
             <td><span class="${item.status === 1 ? 'status-active' : 'status-disabled'}">${item.status === 1 ? '启用' : '禁用'}</span></td>
+            <td>
+                <button class="btn-small btn-copy" onclick="copyShortURL('${shortURL}')" title="复制短链">复制</button>
+                <button class="btn-small btn-copy" onclick="showQRCode('${shortURL}')" title="生成二维码">二维码</button>
+            </td>
         `;
         tbody.appendChild(row);
     });
@@ -627,6 +631,7 @@ function renderShortURLTable(items) {
             <td><span class="${item.status === 1 ? 'status-active' : 'status-disabled'}">${item.status === 1 ? '启用' : '禁用'}</span></td>
             <td>
                 <button class="btn-small btn-copy" onclick="copyShortURL('${shortURL}')" title="复制短链">复制</button>
+                <button class="btn-small btn-copy" onclick="showQRCode('${shortURL}')" title="生成二维码">二维码</button>
                 <button class="btn-small btn-toggle" onclick="toggleShortURLStatus('${item.short_code}', ${item.status})">
                     ${item.status === 1 ? '禁用' : '启用'}
                 </button>
@@ -886,6 +891,43 @@ function showEditUserModal(user) {
 function closeEditUserModal() {
     document.getElementById('edit-user-modal').classList.add('hidden');
     document.getElementById('edit-user-form').reset();
+}
+
+// 显示二维码模态框
+function showQRCode(url) {
+    const container = document.getElementById('qrcode-container');
+    const urlDisplay = document.getElementById('qrcode-url');
+    
+    // 清空之前的二维码
+    container.innerHTML = '';
+    
+    // 显示URL
+    urlDisplay.textContent = url;
+    
+    // 生成二维码
+    try {
+        new QRCode(container, {
+            text: url,
+            width: 200,
+            height: 200,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    } catch (error) {
+        console.error('生成二维码失败:', error);
+        container.innerHTML = '<p style="color: red;">生成二维码失败</p>';
+    }
+    
+    // 显示模态框
+    document.getElementById('qrcode-modal').classList.remove('hidden');
+}
+
+// 关闭二维码模态框
+function closeQRCodeModal() {
+    document.getElementById('qrcode-modal').classList.add('hidden');
+    // 清空二维码容器，释放内存
+    document.getElementById('qrcode-container').innerHTML = '';
 }
 
 // 创建用户

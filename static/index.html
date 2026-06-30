@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MinLink - 短链系统</title>
     <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -96,7 +97,10 @@
                 <div id="result" class="result hidden">
                     <div class="result-header">
                         <span class="result-title">生成成功！</span>
-                        <button id="copy-btn" class="copy-btn">复制</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button id="copy-btn" class="copy-btn">复制</button>
+                            <button id="qrcode-btn" class="copy-btn" onclick="showQRCode(document.getElementById('short-url-result').value)">二维码</button>
+                        </div>
                     </div>
                     <input type="text" id="short-url-result" readonly class="result-url">
                     <div class="result-stats" id="result-stats">
@@ -207,6 +211,7 @@
                                     <th>访问量</th>
                                     <th>剩余天数</th>
                                     <th>状态</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody id="mylinks-table-body">
@@ -350,6 +355,16 @@
                     </div>
                     <button type="submit" class="submit-btn">保存修改</button>
                 </form>
+            </div>
+        </div>
+        
+        <!-- 二维码模态框 -->
+        <div id="qrcode-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeQRCodeModal()">&times;</span>
+                <h3>短链二维码</h3>
+                <div id="qrcode-container" style="text-align: center; padding: 20px;"></div>
+                <p id="qrcode-url" style="text-align: center; word-break: break-all; margin-top: 15px; color: #666; font-size: 0.9rem;"></p>
             </div>
         </div>
     </div>
