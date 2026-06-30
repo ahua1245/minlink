@@ -11,6 +11,7 @@ type ShortURL struct {
 	Remark     string    `gorm:"size:500" json:"remark"`     // 备注
 	LongURL    string    `gorm:"not null;size:2048" json:"long_url"`
 	UserID     uint      `gorm:"default:0" json:"user_id"`
+	CreatedBy  string    `gorm:"size:50" json:"created_by"`  // 创建用户名
 	VisitCount uint      `gorm:"default:0" json:"total_visits"`
 	ExpireAt   *time.Time `gorm:"null" json:"expire_at"`
 	Status     int       `gorm:"default:1" json:"status"`
