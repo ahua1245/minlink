@@ -99,11 +99,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 创建短链
 async function createShortURL(longURL, expireDays, customDomain, name, remark) {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    
+    // 如果用户已登录，添加 Authorization header
+    if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
     const response = await fetch(`${API_BASE_URL}/short-url`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: JSON.stringify({
             long_url: longURL,
             expire_days: expireDays,

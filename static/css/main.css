@@ -696,12 +696,12 @@ body {
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 .admin-table th,
 .admin-table td {
-    padding: 12px 15px;
+    padding: 12px 10px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
     overflow: hidden;
@@ -717,52 +717,123 @@ body {
     top: 0;
 }
 
+/* 第1列：短码 */
 .admin-table th:nth-child(1),
 .admin-table td:nth-child(1) {
-    width: 120px;
+    width: 110px;
+    min-width: 100px;
 }
 
+/* 第2列：名称 */
 .admin-table th:nth-child(2),
 .admin-table td:nth-child(2) {
-    width: 150px;
+    width: 120px;
+    min-width: 100px;
 }
 
+/* 第3列：备注 */
 .admin-table th:nth-child(3),
 .admin-table td:nth-child(3) {
-    width: 150px;
+    width: 120px;
+    min-width: 100px;
 }
 
+/* 第4列：长链接 */
 .admin-table th:nth-child(4),
 .admin-table td:nth-child(4) {
-    width: 120px;
+    min-width: 150px;
+    max-width: 300px;
 }
 
+/* 第5列：访问量 */
 .admin-table th:nth-child(5),
 .admin-table td:nth-child(5) {
-    width: 90px;
+    width: 80px;
+    min-width: 70px;
     text-align: center;
 }
 
+/* 第6列：剩余天数 */
 .admin-table th:nth-child(6),
 .admin-table td:nth-child(6) {
-    width: 220px;
+    width: 90px;
+    min-width: 80px;
     text-align: center;
 }
 
+/* 第7列：创建人 */
 .admin-table th:nth-child(7),
 .admin-table td:nth-child(7) {
-    width: 70px;
+    width: 80px;
+    min-width: 70px;
     text-align: center;
 }
 
+/* 第8列：状态 */
 .admin-table th:nth-child(8),
 .admin-table td:nth-child(8) {
-    width: 240px;
+    width: 80px;
+    min-width: 70px;
+    text-align: center;
+}
+
+/* 第9列：操作 */
+.admin-table th:nth-child(9),
+.admin-table td:nth-child(9) {
+    width: 260px;
+    min-width: 240px;
     text-align: center;
 }
 
 .admin-table tr:hover {
     background: #f8f9fa;
+}
+
+/* 用户短链表格（7列） */
+.profile-table th:nth-child(1),
+.profile-table td:nth-child(1) {
+    width: 110px !important;
+    min-width: 100px !important;
+}
+
+.profile-table th:nth-child(2),
+.profile-table td:nth-child(2) {
+    width: 120px !important;
+    min-width: 100px !important;
+}
+
+.profile-table th:nth-child(3),
+.profile-table td:nth-child(3) {
+    min-width: 200px !important;
+    max-width: 400px !important;
+}
+
+.profile-table th:nth-child(4),
+.profile-table td:nth-child(4) {
+    width: 80px !important;
+    min-width: 70px !important;
+    text-align: center !important;
+}
+
+.profile-table th:nth-child(5),
+.profile-table td:nth-child(5) {
+    width: 90px !important;
+    min-width: 80px !important;
+    text-align: center !important;
+}
+
+.profile-table th:nth-child(6),
+.profile-table td:nth-child(6) {
+    width: 80px !important;
+    min-width: 70px !important;
+    text-align: center !important;
+}
+
+.profile-table th:nth-child(7),
+.profile-table td:nth-child(7) {
+    width: 160px !important;
+    min-width: 140px !important;
+    text-align: center !important;
 }
 
 .status-active {
