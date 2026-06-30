@@ -206,6 +206,21 @@ async function changePassword(oldPassword, newPassword) {
 
 // ==================== 管理员 API ====================
 
+// 获取用户短链列表（普通用户）
+async function getUserShortURLList(page = 1, pageSize = 10) {
+    const response = await fetch(`${API_BASE_URL}/user/short-url/list?page=${page}&page_size=${pageSize}`, {
+        headers: {
+            'Authorization': `Bearer ${authToken}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('获取短链列表失败');
+    }
+
+    return response.json();
+}
+
 // 获取管理员短链列表
 async function getAdminShortURLList(page = 1, pageSize = 10) {
     const response = await fetch(`${API_BASE_URL}/admin/short-url/list?page=${page}&page_size=${pageSize}`, {
@@ -456,6 +471,31 @@ function showPage(pageName) {
     }
 }
 
+// 用户中心标签页切换
+function showProfileTab(tabName) {
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    document.querySelectorAll('.profile-tabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    const targetTab = document.getElementById(`tab-${tabName}`);
+    targetTab.classList.remove('hidden');
+    
+    const buttons = document.querySelectorAll('.profile-tabs .tab-btn');
+    buttons.forEach(btn => {
+        if (btn.getAttribute('onclick').includes(tabName)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // 如果切换到我的短链标签页，加载短链列表
+    if (tabName === 'mylinks') {
+        loadMyShortURLs();
+    }
+}
+
 // 显示管理后台标签页
 function showAdminTab(tabName) {
     document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -507,6 +547,48 @@ async function loadShortURLs() {
     }
 }
 
+// 加载我的短链列表
+async function loadMyShortURLs() {
+    try {
+        const result = await getUserShortURLList(1, 100);
+        if (result.code === 0) {
+            renderMyShortURLTable(result.data.items);
+        } else {
+            console.error('加载我的短链列表失败:', result.message);
+            alert('加载失败: ' + result.message);
+        }
+    } catch (error) {
+        console.error('加载我的短链列表失败:', error);
+        alert('加载短链列表失败');
+    }
+}
+
+// 渲染我的短链表格
+function renderMyShortURLTable(items) {
+    const tbody = document.getElementById('mylinks-table-body');
+    tbody.innerHTML = '';
+    
+    if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">暂无数据</td></tr>';
+        return;
+    }
+    
+    items.forEach(item => {
+        const shortURL = `http://${window.location.host}/${item.short_code}`;
+        const remainingDays = calculateRemainingDays(item.expire_at);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><a href="${shortURL}" target="_blank">${item.short_code || '-'}</a></td>
+            <td title="${item.name || ''}">${item.name || '-'}</td>
+            <td title="${item.long_url}">${truncateText(item.long_url, 40)}</td>
+            <td>${item.total_visits || 0}</td>
+            <td>${remainingDays}</td>
+            <td><span class="${item.status === 1 ? 'status-active' : 'status-disabled'}">${item.status === 1 ? '启用' : '禁用'}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
 // 加载用户列表
 async function loadUsers() {
     try {
@@ -526,7 +608,7 @@ function renderShortURLTable(items) {
     tbody.innerHTML = '';
     
     if (!items || items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">暂无数据</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>';
         return;
     }
     
@@ -541,6 +623,7 @@ function renderShortURLTable(items) {
             <td title="${item.long_url}">${truncateText(item.long_url, 40)}</td>
             <td>${item.total_visits || 0}</td>
             <td>${remainingDays}</td>
+            <td>${item.created_by || 'guest'}</td>
             <td><span class="${item.status === 1 ? 'status-active' : 'status-disabled'}">${item.status === 1 ? '启用' : '禁用'}</span></td>
             <td>
                 <button class="btn-small btn-copy" onclick="copyShortURL('${shortURL}')" title="复制短链">复制</button>

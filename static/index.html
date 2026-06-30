@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MinLink - 短链接服务</title>
+    <title>MinLink - 短链系统</title>
     <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
@@ -148,39 +148,71 @@
             <div class="profile-container">
                 <h2>用户中心</h2>
                 
-                <!-- 用户信息 -->
-                <div class="profile-section">
-                    <h3>个人信息</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">用户名</span>
-                            <span class="info-value" id="profile-username">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">邮箱</span>
-                            <span class="info-value" id="profile-email">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">角色</span>
-                            <span class="info-value" id="profile-role">-</span>
+                <!-- 标签页 -->
+                <div class="profile-tabs">
+                    <button class="tab-btn active" onclick="showProfileTab('info')">个人信息</button>
+                    <button class="tab-btn" onclick="showProfileTab('mylinks')">我的短链</button>
+                </div>
+                
+                <!-- 个人信息 -->
+                <div id="tab-info" class="profile-tab active">
+                    <div class="profile-section">
+                        <h3>个人信息</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">用户名</span>
+                                <span class="info-value" id="profile-username">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">邮箱</span>
+                                <span class="info-value" id="profile-email">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">角色</span>
+                                <span class="info-value" id="profile-role">-</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 修改密码 -->
-                <div class="profile-section">
-                    <h3>修改密码</h3>
-                    <form id="change-password-form" class="change-password-form">
-                        <div class="form-group">
-                            <label for="old-password">旧密码</label>
-                            <input type="password" id="old-password" placeholder="请输入旧密码" required>
+                    <!-- 修改密码 -->
+                    <div class="profile-section">
+                        <h3>修改密码</h3>
+                        <form id="change-password-form" class="change-password-form">
+                            <div class="form-group">
+                                <label for="old-password">旧密码</label>
+                                <input type="password" id="old-password" placeholder="请输入旧密码" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">新密码</label>
+                                <input type="password" id="new-password" placeholder="请输入新密码" required>
+                            </div>
+                            <button type="submit" class="submit-btn">修改密码</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 我的短链 -->
+                <div id="tab-mylinks" class="profile-tab hidden">
+                    <div class="profile-section">
+                        <h3>我创建的短链</h3>
+                        <div class="admin-actions">
+                            <button class="action-btn" onclick="loadMyShortURLs()">刷新列表</button>
                         </div>
-                        <div class="form-group">
-                            <label for="new-password">新密码</label>
-                            <input type="password" id="new-password" placeholder="请输入新密码" required>
-                        </div>
-                        <button type="submit" class="submit-btn">修改密码</button>
-                    </form>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>短码</th>
+                                    <th>名称</th>
+                                    <th>长链接</th>
+                                    <th>访问量</th>
+                                    <th>剩余天数</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mylinks-table-body">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,6 +243,7 @@
                                 <th>长链接</th>
                                 <th>访问量</th>
                                 <th>剩余天数</th>
+                                <th>创建人</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>

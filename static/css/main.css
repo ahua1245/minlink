@@ -948,3 +948,36 @@ body {
         min-width: 60px;
     }
 }
+
+/* 用户中心标签页 */
+.profile-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-tabs .tab-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.profile-tabs .tab-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-weight: 600;
+}
+
+.profile-tab {
+    display: block;
+}
+
+.profile-tab.hidden {
+    display: none;
+}
