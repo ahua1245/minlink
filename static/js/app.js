@@ -48,35 +48,31 @@ function updateExpireOptions() {
     const select = document.getElementById('expire-days');
     const isLoggedIn = currentUser !== null;
     
-    // 清空现有选项
-    select.innerHTML = '';
-    
-    // 游客：只显示一周内选项
-    // 登录用户/管理员：显示全部选项（含永久）
-    const options = isLoggedIn 
-        ? [
-            { value: 1, text: '1天' },
-            { value: 3, text: '3天' },
-            { value: 7, text: '1周', selected: true },
-            { value: 30, text: '1个月' },
-            { value: 365, text: '1年' },
-            { value: 0, text: '永久（不过期）' }
-          ]
-        : [
-            { value: 1, text: '1天' },
-            { value: 3, text: '3天' },
-            { value: 7, text: '1周', selected: true }
-          ];
-    
-    options.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt.value;
-        option.textContent = opt.text;
-        if (opt.selected) {
-            option.selected = true;
+    const options = select.options;
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        const value = parseInt(opt.value);
+        
+        if (isLoggedIn) {
+            // 登录用户：启用所有选项
+            opt.disabled = false;
+            opt.title = '';
+        } else {
+            // 游客：禁用一个月、一年、长期选项
+            if (value === 30 || value === 365 || value === 0) {
+                opt.disabled = true;
+                opt.title = '请先登录';
+            } else {
+                opt.disabled = false;
+                opt.title = '';
+            }
         }
-        select.appendChild(option);
-    });
+    }
+    
+    // 如果当前选中的是被禁用的选项，自动切换到1周
+    if (!isLoggedIn && select.options[select.selectedIndex].disabled) {
+        select.value = '7';
+    }
 }
 
 // 初始化
@@ -442,6 +438,7 @@ function logout() {
     document.getElementById('nav-admin').classList.add('hidden');
     document.getElementById('logout-btn').classList.add('hidden');
     
+    updateExpireOptions();
     showPage('home');
     alert('已退出登录');
 }
@@ -1103,6 +1100,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             currentUser = result.data.user;
             
             updateNavbar();
+            updateExpireOptions();
             showPage('home');
             alert('登录成功');
         } else {

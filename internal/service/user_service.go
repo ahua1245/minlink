@@ -32,6 +32,7 @@ type Claims struct {
 type UserService interface {
 	Login(username, password string) (string, *model.User, error)
 	GetProfile(userID uint) (*model.User, error)
+	GetProfileByUsername(username string) (*model.User, error)
 	ChangePassword(userID uint, oldPassword, newPassword string) error
 	UpdateProfile(userID uint, email string) error
 	ListUsers(page, limit int) ([]model.User, int, error)
@@ -102,6 +103,11 @@ func (s *userService) generateToken(userID uint, username string, role int) (str
 // GetProfile 获取用户信息
 func (s *userService) GetProfile(userID uint) (*model.User, error) {
 	return s.repo.FindByID(userID)
+}
+
+// GetProfileByUsername 根据用户名获取用户信息
+func (s *userService) GetProfileByUsername(username string) (*model.User, error) {
+	return s.repo.FindByUsername(username)
 }
 
 // ChangePassword 修改密码
@@ -208,6 +214,7 @@ func (s *userService) InitDefaultAdmin() error {
 	}
 
 	admin := &model.User{
+		ID:       1,
 		Username: "admin",
 		Password: string(hashedPassword),
 		Email:    "admin@example.com",

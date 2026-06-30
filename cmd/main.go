@@ -13,9 +13,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	_ "github.com/glebarez/sqlite"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 
 	cfg := config.LoadConfig()
 
-	db, err := gorm.Open("sqlite", cfg.DBPath)
+	db, err := gorm.Open("sqlite3", cfg.DBPath)
 	if err != nil {
 		log.Fatalf("Failed to connect database: %v", err)
 	}

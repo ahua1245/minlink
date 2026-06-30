@@ -222,7 +222,8 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": 0, "message": "创建成功"})
+	user, _ := h.userService.GetProfileByUsername(req.Username)
+	c.JSON(http.StatusOK, gin.H{"code": 0, "message": "创建成功", "data": user})
 }
 
 // DeleteUser 删除用户（管理员）
