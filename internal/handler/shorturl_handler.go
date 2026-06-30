@@ -56,7 +56,27 @@ func (h *ShortURLHandler) CreateShortURL(c *gin.Context) {
 		return
 	}
 
-	shortURL, err := h.service.CreateShortURL(req.LongURL, req.ExpireDays, 0, req.Name, req.Remark)
+	// 获取当前用户信息（游客为 nil）
+	var userID uint = 0
+	var username string = ""
+
+	userIDValue, exists := c.Get("user_id")
+	if exists {
+		userID = userIDValue.(uint)
+	}
+
+	usernameValue, exists := c.Get("username")
+	if exists {
+		username = usernameValue.(string)
+	}
+
+	// 游客权限校验：只能创建一周内的短链
+	if userID == 0 && req.ExpireDays > 7 && req.ExpireDays != 0 {
+		c.JSON(http.StatusForbidden, gin.H{"code": 403, "message": "游客只能创建有效期一周内的短链"})
+		return
+	}
+
+	shortURL, err := h.service.CreateShortURL(req.LongURL, req.ExpireDays, userID, username, req.Name, req.Remark)
 	if err != nil {
 		if err == service.ErrInvalidURL {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "无效的URL"})
@@ -76,6 +96,7 @@ func (h *ShortURLHandler) CreateShortURL(c *gin.Context) {
 			"short_url":  shortURLStr,
 			"short_code": shortURL.ShortCode,
 			"expire_at":  shortURL.ExpireAt,
+			"created_by": shortURL.CreatedBy,
 		},
 	})
 }
@@ -165,4 +186,75 @@ func (h *ShortURLHandler) DeleteShortURL(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 0, "message": "删除成功"})
+}
+
+// ListUserShortURLs 用户查看自己的短链列表
+func (h *ShortURLHandler) ListUserShortURLs(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "message": "未登录"})
+		return
+	}
+
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	shortURLs, total, err := h.service.ListShortURLs(userID.(uint), page, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "获取失败"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": gin.H{
+			"items": shortURLs,
+			"total": total,
+			"page":  page,
+			"limit": limit,
+		},
+	})
+}
+
+// ListAdminShortURLs 管理员查看所有短链列表
+func (h *ShortURLHandler) ListAdminShortURLs(c *gin.Context) {
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	// userID = 0 表示查询所有
+	shortURLs, total, err := h.service.ListShortURLs(0, page, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "获取失败"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": gin.H{
+			"items": shortURLs,
+			"total": total,
+			"page":  page,
+			"limit": limit,
+		},
+	})
 }
