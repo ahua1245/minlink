@@ -77,8 +77,8 @@ func main() {
 
 	api := r.Group("/api/v1")
 	{
-		// 公开接口
-		api.POST("/short-url", shortURLHandler.CreateShortURL)
+		// 公开接口（支持可选 JWT 认证）
+		api.POST("/short-url", middleware.OptionalJWTMiddleware(cfg.JWTSecret), shortURLHandler.CreateShortURL)
 		api.GET("/short-url/:code/stats", shortURLHandler.GetStats)
 		api.GET("/short-url/list", shortURLHandler.ListShortURLs)
 
@@ -92,6 +92,8 @@ func main() {
 			userGroup.GET("/profile", userHandler.GetProfile)
 			userGroup.PUT("/password", userHandler.ChangePassword)
 			userGroup.PUT("/profile", userHandler.UpdateProfile)
+			// 用户短链列表
+			userGroup.GET("/short-url/list", shortURLHandler.ListUserShortURLs)
 		}
 
 		// 需要管理员权限的接口
@@ -107,7 +109,7 @@ func main() {
 			adminGroup.DELETE("/users/:id", userHandler.DeleteUser)
 
 			// 短链管理（管理员可以管理所有短链）
-			adminGroup.GET("/short-url/list", shortURLHandler.ListShortURLs)
+			adminGroup.GET("/short-url/list", shortURLHandler.ListAdminShortURLs)
 			adminGroup.PUT("/short-url/:code/status", shortURLHandler.UpdateStatus)
 			adminGroup.DELETE("/short-url/:code", shortURLHandler.DeleteShortURL)
 		}
