@@ -62,3 +62,50 @@ func AdminMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// OptionalJWTMiddleware 可选 JWT 认证（游客和登录用户都可访问）
+func OptionalJWTMiddleware(secret string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			// 游客模式
+			c.Set("user_id", uint(0))
+			c.Set("username", "")
+			c.Set("role", 0)
+			c.Next()
+			return
+		}
+
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			// JWT 格式无效，仍然允许访问（游客模式）
+			c.Set("user_id", uint(0))
+			c.Set("username", "")
+			c.Set("role", 0)
+			c.Next()
+			return
+		}
+
+		tokenStr := parts[1]
+		claims := &Claims{}
+
+		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(secret), nil
+		})
+
+		if err != nil || !token.Valid {
+			// JWT 无效，仍然允许访问（游客模式）
+			c.Set("user_id", uint(0))
+			c.Set("username", "")
+			c.Set("role", 0)
+			c.Next()
+			return
+		}
+
+		// JWT 有效
+		c.Set("user_id", claims.UserID)
+		c.Set("username", claims.Username)
+		c.Set("role", claims.Role)
+		c.Next()
+	}
+}
