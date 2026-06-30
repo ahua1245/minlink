@@ -75,18 +75,38 @@ func (r *shortURLRepository) UpdateVisitCount(shortCode string, count int) error
 func (r *shortURLRepository) List(userID uint, page, limit int) ([]model.ShortURL, error) {
 	var shortURLs []model.ShortURL
 	offset := (page - 1) * limit
-	err := r.db.Where("user_id = ?", userID).Order("created_at DESC").Offset(offset).Limit(limit).Find(&shortURLs).Error
-	if err != nil {
-		return nil, err
+
+	if userID == 0 {
+		// 管理员：查询所有短链
+		err := r.db.Order("created_at DESC").Offset(offset).Limit(limit).Find(&shortURLs).Error
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		// 普通用户：只查自己的
+		err := r.db.Where("user_id = ?", userID).Order("created_at DESC").Offset(offset).Limit(limit).Find(&shortURLs).Error
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	return shortURLs, nil
 }
 
 func (r *shortURLRepository) Count(userID uint) (int, error) {
 	var count int
-	err := r.db.Model(&model.ShortURL{}).Where("user_id = ?", userID).Count(&count).Error
-	if err != nil {
-		return 0, err
+	if userID == 0 {
+		// 管理员：查询所有短链数量
+		err := r.db.Model(&model.ShortURL{}).Count(&count).Error
+		if err != nil {
+			return 0, err
+		}
+	} else {
+		// 普通用户：只查自己的短链数量
+		err := r.db.Model(&model.ShortURL{}).Where("user_id = ?", userID).Count(&count).Error
+		if err != nil {
+			return 0, err
+		}
 	}
 	return count, nil
 }
