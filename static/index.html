@@ -17,13 +17,23 @@
                 <a href="javascript:void(0)" class="nav-link" onclick="showPage('login')" id="nav-login">登录</a>
                 <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('profile')" id="nav-profile">用户中心</a>
                 <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('admin')" id="nav-admin">管理后台</a>
-                <div class="user-info hidden" id="user-info">
-                    <div class="user-avatar" id="user-avatar">
-                        <span id="user-avatar-text">U</span>
+                <div class="user-menu hidden" id="user-menu">
+                    <div class="user-info" id="user-info">
+                        <div class="user-avatar" id="user-avatar">
+                            <span id="user-avatar-text">U</span>
+                        </div>
+                        <span class="user-name" id="user-name">用户名</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-arrow">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </div>
-                    <span class="user-name" id="user-name">用户名</span>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="javascript:void(0)" class="dropdown-item" onclick="showPage('profile')">我的短链</a>
+                        <a href="javascript:void(0)" class="dropdown-item" onclick="showPage('info')">个人信息</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="javascript:void(0)" class="dropdown-item logout-item" onclick="logout()">退出登录</a>
+                    </div>
                 </div>
-                <button class="logout-btn hidden" id="logout-btn" onclick="logout()">退出登录</button>
             </div>
         </div>
     </nav>
@@ -153,77 +163,70 @@
             </div>
         </div>
 
-        <!-- 用户中心 -->
+        <!-- 我的短链 -->
         <div id="page-profile" class="page hidden">
             <div class="profile-container">
-                <h2>用户中心</h2>
+                <h2>我的短链</h2>
                 
-                <!-- 标签页 -->
-                <div class="profile-tabs">
-                    <button class="tab-btn active" onclick="showProfileTab('info')">个人信息</button>
-                    <button class="tab-btn" onclick="showProfileTab('mylinks')">我的短链</button>
-                </div>
-                
-                <!-- 个人信息 -->
-                <div id="tab-info" class="profile-tab active">
-                    <div class="profile-section">
-                        <h3>个人信息</h3>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">用户名</span>
-                                <span class="info-value" id="profile-username">-</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">邮箱</span>
-                                <span class="info-value" id="profile-email">-</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">角色</span>
-                                <span class="info-value" id="profile-role">-</span>
-                            </div>
-                        </div>
+                <div class="profile-section">
+                    <div class="admin-actions">
+                        <button class="action-btn" onclick="loadMyShortURLs()">刷新列表</button>
                     </div>
+                    <table class="admin-table profile-table">
+                        <thead>
+                            <tr>
+                                <th>短码</th>
+                                <th>名称</th>
+                                <th>长链接</th>
+                                <th>访问量</th>
+                                <th>剩余天数</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mylinks-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-                    <!-- 修改密码 -->
-                    <div class="profile-section">
-                        <h3>修改密码</h3>
-                        <form id="change-password-form" class="change-password-form">
-                            <div class="form-group">
-                                <label for="old-password">旧密码</label>
-                                <input type="password" id="old-password" placeholder="请输入旧密码" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-password">新密码</label>
-                                <input type="password" id="new-password" placeholder="请输入新密码" required>
-                            </div>
-                            <button type="submit" class="submit-btn">修改密码</button>
-                        </form>
+        <!-- 个人信息 -->
+        <div id="page-info" class="page hidden">
+            <div class="profile-container">
+                <h2>个人信息</h2>
+                
+                <div class="profile-section">
+                    <h3>基本信息</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">用户名</span>
+                            <span class="info-value" id="profile-username">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">邮箱</span>
+                            <span class="info-value" id="profile-email">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">角色</span>
+                            <span class="info-value" id="profile-role">-</span>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- 我的短链 -->
-                <div id="tab-mylinks" class="profile-tab hidden">
-                    <div class="profile-section">
-                        <h3>我创建的短链</h3>
-                        <div class="admin-actions">
-                            <button class="action-btn" onclick="loadMyShortURLs()">刷新列表</button>
+
+                <div class="profile-section">
+                    <h3>修改密码</h3>
+                    <form id="change-password-form" class="change-password-form">
+                        <div class="form-group">
+                            <label for="old-password">旧密码</label>
+                            <input type="password" id="old-password" placeholder="请输入旧密码" required>
                         </div>
-                        <table class="admin-table profile-table">
-                            <thead>
-                                <tr>
-                                    <th>短码</th>
-                                    <th>名称</th>
-                                    <th>长链接</th>
-                                    <th>访问量</th>
-                                    <th>剩余天数</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="mylinks-table-body">
-                            </tbody>
-                        </table>
-                    </div>
+                        <div class="form-group">
+                            <label for="new-password">新密码</label>
+                            <input type="password" id="new-password" placeholder="请输入新密码" required>
+                        </div>
+                        <button type="submit" class="submit-btn">修改密码</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -367,10 +370,15 @@
         <!-- 二维码模态框 -->
         <div id="qrcode-modal" class="modal hidden">
             <div class="modal-content qrcode-modal-content">
-                <span class="close-modal" onclick="closeQRCodeModal()">&times;</span>
                 <h3>短链二维码</h3>
                 <div id="qrcode-container"></div>
                 <p id="qrcode-url" style="word-break: break-all; margin-top: 15px; color: #666; font-size: 0.9rem; text-align: center; max-width: 90%;"></p>
+                <button class="close-modal" onclick="closeQRCodeModal()" title="关闭">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>

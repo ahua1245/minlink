@@ -89,7 +89,96 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('keyup', () => updateClearIcon(id));
         }
     });
+    
+    // 头像下拉菜单交互
+    initUserMenu();
 });
+
+// 初始化用户菜单
+function initUserMenu() {
+    const userMenu = document.getElementById('user-menu');
+    if (userMenu) {
+        let showTimeout = null;
+        let hideTimeout = null;
+        
+        const userInfo = userMenu.querySelector('.user-info');
+        const userDropdown = userMenu.querySelector('.user-dropdown');
+        
+        function showMenu() {
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+            userMenu.classList.add('active');
+            startAutoHide();
+        }
+        
+        function hideMenu() {
+            userMenu.classList.remove('active');
+            if (showTimeout) {
+                clearTimeout(showTimeout);
+                showTimeout = null;
+            }
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+        }
+        
+        function startAutoHide() {
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+            }
+            hideTimeout = setTimeout(hideMenu, 5000);
+        }
+        
+        userInfo.addEventListener('mouseenter', function() {
+            showTimeout = setTimeout(showMenu, 300);
+        });
+        
+        userInfo.addEventListener('mouseleave', function() {
+            if (showTimeout) {
+                clearTimeout(showTimeout);
+                showTimeout = null;
+            }
+        });
+        
+        userDropdown.addEventListener('mouseenter', function() {
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+        });
+        
+        userDropdown.addEventListener('mouseleave', function() {
+            hideMenu();
+        });
+        
+        userInfo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (userMenu.classList.contains('active')) {
+                hideMenu();
+            } else {
+                showMenu();
+            }
+        });
+        
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        document.addEventListener('click', function() {
+            hideMenu();
+        });
+        
+        const dropdownItems = userMenu.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                hideMenu();
+            });
+        });
+    }
+}
 
 // ==================== 基础 API ====================
 
@@ -419,18 +508,15 @@ async function checkLoginStatus() {
 // 更新导航栏
 function updateNavbar() {
     document.getElementById('nav-login').classList.add('hidden');
-    document.getElementById('nav-profile').classList.remove('hidden');
-    document.getElementById('logout-btn').classList.remove('hidden');
+    document.getElementById('nav-profile').classList.add('hidden');
     
-    // 显示用户信息
-    const userInfo = document.getElementById('user-info');
+    const userMenu = document.getElementById('user-menu');
     const userName = document.getElementById('user-name');
     const userAvatarText = document.getElementById('user-avatar-text');
     
     if (currentUser) {
-        userInfo.classList.remove('hidden');
+        userMenu.classList.remove('hidden');
         userName.textContent = currentUser.username || '用户';
-        // 取用户名第一个字符作为头像显示
         userAvatarText.textContent = (currentUser.username || 'U')[0].toUpperCase();
     }
     
@@ -448,10 +534,8 @@ function logout() {
     document.getElementById('nav-login').classList.remove('hidden');
     document.getElementById('nav-profile').classList.add('hidden');
     document.getElementById('nav-admin').classList.add('hidden');
-    document.getElementById('logout-btn').classList.add('hidden');
     
-    // 隐藏用户信息
-    document.getElementById('user-info').classList.add('hidden');
+    document.getElementById('user-menu').classList.add('hidden');
     
     updateExpireOptions();
     showPage('home');
@@ -479,8 +563,11 @@ function showPage(pageName) {
         navLink.classList.add('active');
     }
     
-    // 如果是用户中心，加载用户信息
+    // 如果是用户中心或个人信息，加载用户信息
     if (pageName === 'profile') {
+        loadMyShortURLs();
+    }
+    if (pageName === 'info') {
         loadProfile();
     }
     
@@ -490,30 +577,7 @@ function showPage(pageName) {
     }
 }
 
-// 用户中心标签页切换
-function showProfileTab(tabName) {
-    document.querySelectorAll('.profile-tab').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-    document.querySelectorAll('.profile-tabs .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    const targetTab = document.getElementById(`tab-${tabName}`);
-    targetTab.classList.remove('hidden');
-    
-    const buttons = document.querySelectorAll('.profile-tabs .tab-btn');
-    buttons.forEach(btn => {
-        if (btn.getAttribute('onclick').includes(tabName)) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // 如果切换到我的短链标签页，加载短链列表
-    if (tabName === 'mylinks') {
-        loadMyShortURLs();
-    }
-}
+
 
 // 显示管理后台标签页
 function showAdminTab(tabName) {

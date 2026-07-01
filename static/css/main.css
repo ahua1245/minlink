@@ -78,8 +78,14 @@ body {
     background: #ff3344;
 }
 
-/* 用户信息显示 */
-.user-info {
+/* 用户菜单 */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.user-menu .user-info {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -87,6 +93,80 @@ body {
     background: #f5f5f5;
     border-radius: 20px;
     margin-right: 10px;
+    transition: all 0.2s;
+}
+
+.user-menu:hover .user-info,
+.user-menu.active .user-info {
+    background: #e8e8e8;
+}
+
+.dropdown-arrow {
+    color: #999;
+    margin-left: 4px;
+    transition: transform 0.2s;
+}
+
+.user-menu.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 2px);
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    min-width: 160px;
+    padding: 8px 0;
+    z-index: 1001;
+    display: none;
+    animation: dropdownFadeIn 0.2s ease;
+    margin-top: 6px;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-menu:hover .user-dropdown,
+.user-menu.active .user-dropdown {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 8px 0;
+}
+
+.logout-item {
+    color: #ff4757;
+}
+
+.logout-item:hover {
+    background: #fff5f5;
 }
 
 .user-avatar {
@@ -924,6 +1004,30 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.qrcode-modal-content .close-modal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.qrcode-modal-content .close-modal:hover {
+    background: #e0e0e0;
+    color: #666;
 }
 
 #qrcode-container {
@@ -1077,35 +1181,3 @@ body {
     }
 }
 
-/* 用户中心标签页 */
-.profile-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.profile-tabs .tab-btn {
-    padding: 10px 20px;
-    font-size: 1rem;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    color: #666;
-    transition: all 0.2s;
-}
-
-.profile-tabs .tab-btn.active {
-    color: #667eea;
-    border-bottom-color: #667eea;
-    font-weight: 600;
-}
-
-.profile-tab {
-    display: block;
-}
-
-.profile-tab.hidden {
-    display: none;
-}
