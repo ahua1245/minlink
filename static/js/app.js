@@ -657,7 +657,7 @@ function renderMyShortURLTable(items) {
     }
     
     items.forEach(item => {
-        const shortURL = `http://${window.location.host}/${item.short_code}`;
+        const shortURL = `${window.location.protocol}//${window.location.host}/${item.short_code}`;
         const remainingDays = calculateRemainingDays(item.expire_at);
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -700,7 +700,7 @@ function renderShortURLTable(items) {
     }
     
     items.forEach(item => {
-        const shortURL = `http://${window.location.host}/${item.short_code}`;
+        const shortURL = `${window.location.protocol}//${window.location.host}/${item.short_code}`;
         const remainingDays = calculateRemainingDays(item.expire_at);
         const row = document.createElement('tr');
         row.innerHTML = `

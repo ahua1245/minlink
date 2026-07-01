@@ -87,7 +87,11 @@ func (h *ShortURLHandler) CreateShortURL(c *gin.Context) {
 	}
 
 	host := c.Request.Host
-	shortURLStr := "http://" + host + "/" + shortURL.ShortCode
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	shortURLStr := scheme + "://" + host + "/" + shortURL.ShortCode
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    0,

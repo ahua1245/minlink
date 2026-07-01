@@ -5,7 +5,7 @@
 # 示例: ./build.sh 1.0.0
 
 # 默认版本号
-VERSION=${1:-1.0.5}
+VERSION=${1:-1.0.6}
 
 # 镜像名称
 IMAGE_NAME="minlink"
