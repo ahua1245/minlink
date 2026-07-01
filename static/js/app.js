@@ -422,6 +422,18 @@ function updateNavbar() {
     document.getElementById('nav-profile').classList.remove('hidden');
     document.getElementById('logout-btn').classList.remove('hidden');
     
+    // 显示用户信息
+    const userInfo = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userAvatarText = document.getElementById('user-avatar-text');
+    
+    if (currentUser) {
+        userInfo.classList.remove('hidden');
+        userName.textContent = currentUser.username || '用户';
+        // 取用户名第一个字符作为头像显示
+        userAvatarText.textContent = (currentUser.username || 'U')[0].toUpperCase();
+    }
+    
     if (currentUser && currentUser.role === 1) {
         document.getElementById('nav-admin').classList.remove('hidden');
     }
@@ -437,6 +449,9 @@ function logout() {
     document.getElementById('nav-profile').classList.add('hidden');
     document.getElementById('nav-admin').classList.add('hidden');
     document.getElementById('logout-btn').classList.add('hidden');
+    
+    // 隐藏用户信息
+    document.getElementById('user-info').classList.add('hidden');
     
     updateExpireOptions();
     showPage('home');

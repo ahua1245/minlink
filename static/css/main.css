@@ -78,6 +78,44 @@ body {
     background: #ff3344;
 }
 
+/* 用户信息显示 */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background: #f5f5f5;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-avatar-text {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* 通用样式 */
 .hidden {
     display: none !important;
@@ -880,7 +918,21 @@ body {
     color: #333;
 }
 
-/* 响应式 */
+/* 二维码模态框 */
+.qrcode-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#qrcode-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 220px;
+}
 @media (max-width: 768px) {
     .container {
         max-width: 100%;

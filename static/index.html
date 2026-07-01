@@ -17,6 +17,12 @@
                 <a href="javascript:void(0)" class="nav-link" onclick="showPage('login')" id="nav-login">登录</a>
                 <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('profile')" id="nav-profile">用户中心</a>
                 <a href="javascript:void(0)" class="nav-link hidden" onclick="showPage('admin')" id="nav-admin">管理后台</a>
+                <div class="user-info hidden" id="user-info">
+                    <div class="user-avatar" id="user-avatar">
+                        <span id="user-avatar-text">U</span>
+                    </div>
+                    <span class="user-name" id="user-name">用户名</span>
+                </div>
                 <button class="logout-btn hidden" id="logout-btn" onclick="logout()">退出登录</button>
             </div>
         </div>
@@ -360,11 +366,11 @@
         
         <!-- 二维码模态框 -->
         <div id="qrcode-modal" class="modal hidden">
-            <div class="modal-content">
+            <div class="modal-content qrcode-modal-content">
                 <span class="close-modal" onclick="closeQRCodeModal()">&times;</span>
                 <h3>短链二维码</h3>
-                <div id="qrcode-container" style="text-align: center; padding: 20px;"></div>
-                <p id="qrcode-url" style="text-align: center; word-break: break-all; margin-top: 15px; color: #666; font-size: 0.9rem;"></p>
+                <div id="qrcode-container"></div>
+                <p id="qrcode-url" style="word-break: break-all; margin-top: 15px; color: #666; font-size: 0.9rem; text-align: center; max-width: 90%;"></p>
             </div>
         </div>
     </div>
